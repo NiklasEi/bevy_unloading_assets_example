@@ -9,23 +9,6 @@ fn check_asset_handles(asset_server: Res<AssetServer>, textures: Res<TextureAsse
     )
 }
 
-fn spawn(
-    mut commands: Commands,
-    textures: Res<TextureAssets>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-) {
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
-    commands.spawn_bundle(SpriteBundle {
-        material: materials.add(textures.player.clone().into()),
-        ..Default::default()
-    });
-    commands.spawn_bundle(SpriteBundle {
-        material: materials.add(textures.tree.clone().into()),
-        transform: Transform::from_translation(Vec3::new(100., 10., 0.)),
-        ..Default::default()
-    });
-}
-
 fn start_loading(mut commands: Commands, asset_server: Res<AssetServer>) {
     let mut handle_ids = vec![];
     handle_ids.push(asset_server.load_untyped("textures/player.png").id);
@@ -73,7 +56,6 @@ fn main() {
         .add_state(AppState::Load)
         .add_system_set(SystemSet::on_enter(AppState::Load).with_system(start_loading.system()))
         .add_system_set(SystemSet::on_update(AppState::Load).with_system(check_loading.system()))
-        .add_system_set(SystemSet::on_enter(AppState::Game).with_system(spawn.system()))
         .add_system_set(
             SystemSet::on_update(AppState::Game).with_system(check_asset_handles.system()),
         )
